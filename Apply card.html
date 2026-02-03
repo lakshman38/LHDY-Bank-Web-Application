@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LHDY Card Portal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #f8f9fa;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            padding: 40px;
+            color: white;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .logo::before {
+            content: "💳";
+            margin-right: 12px;
+        }
+
+        .subtitle {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 30px;
+            background: white;
+            margin: 0 40px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transform: translateY(-20px);
+        }
+
+        .category {
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 20px;
+            border-radius: 15px;
+            min-width: 120px;
+        }
+
+        .category:hover {
+            background: #f0f8ff;
+            transform: translateY(-5px);
+        }
+
+        .category.active {
+            background: #e3f2fd;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.3);
+        }
+
+        .category-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .all-icon { background: #e8eaf6; }
+        .lifestyle-icon { background: #fff3e0; }
+        .reward-icon { background: #fce4ec; }
+        .shop-icon { background: #f3e5f5; }
+
+        .category-label {
+            font-size: 16px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card-item {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: all 0.4s ease;
+            cursor: pointer;
+        }
+
+        .card-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .card-visual {
+            width: 100%;
+            height: 220px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-elite {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+        }
+
+        .card-pulse {
+            background: linear-gradient(135deg, #e91e63, #ad1457);
+        }
+
+        .card-infinity {
+            background: linear-gradient(135deg, #673ab7, #3f51b5);
+        }
+
+        .card-plus {
+            background: linear-gradient(135deg, #00bcd4, #0097a7);
+        }
+
+        .card-visual::before {
+            content: "LHDY";
+            position: absolute;
+            top: 25px;
+            left: 25px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .chip {
+            position: absolute;
+            bottom: 80px;
+            left: 25px;
+            width: 40px;
+            height: 30px;
+            background: #ffd700;
+            border-radius: 6px;
+        }
+
+        .contactless {
+            position: absolute;
+            bottom: 25px;
+            right: 25px;
+            color: white;
+            font-size: 20px;
+        }
+
+        .payment-network {
+            position: absolute;
+            bottom: 25px;
+            right: 60px;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            background: rgba(255,255,255,0.2);
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        .card-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .card-network {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .card-benefits {
+            margin-bottom: 20px;
+        }
+
+        .benefit-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .benefit-item::before {
+            content: "✓";
+            color: #4caf50;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-apply {
+            flex: 1;
+            background: #ff9800;
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-apply:hover {
+            background: #f57c00;
+            transform: translateY(-2px);
+        }
+
+        .btn-know-more {
+            color: #2196F3;
+            text-decoration: none;
+            padding: 15px 20px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-know-more:hover {
+            background: #f0f8ff;
+        }
+
+        .network-logos {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            padding: 40px;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .network-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            border-radius: 15px;
+            background: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .network-logo:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .network-icon {
+            font-size: 36px;
+            width: 80px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+        }
+
+        .rupay { background: #ff6b35; color: white; }
+        .visa { background: #1a1f71; color: white; }
+        .mastercard { background: #eb001b; color: white; }
+
+        .network-name {
+            font-weight: 600;
+            color: #333;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .card-item {
+            animation: fadeIn 0.8s ease forwards;
+        }
+
+        .card-item:nth-child(2) { animation-delay: 0.1s; }
+        .card-item:nth-child(3) { animation-delay: 0.2s; }
+        .card-item:nth-child(4) { animation-delay: 0.3s; }
+
+        @media (max-width: 768px) {
+            .categories {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+            
+            .cards-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .network-logos {
+                flex-wrap: wrap;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">LHDY Card</div>
+            <div class="subtitle">Choose your perfect card with leading payment networks</div>
+        </div>
+
+        <div class="categories">
+            <div class="category active" data-category="all">
+                <div class="category-icon all-icon">⚪</div>
+                <div class="category-label">All Cards</div>
+            </div>
+            <div class="category" data-category="lifestyle">
+                <div class="category-icon lifestyle-icon">🍽️</div>
+                <div class="category-label">Lifestyle</div>
+            </div>
+            <div class="category" data-category="reward">
+                <div class="category-icon reward-icon">🎁</div>
+                <div class="category-label">Rewards</div>
+            </div>
+            <div class="category" data-category="shop">
+                <div class="category-icon shop-icon">🛍️</div>
+                <div class="category-label">Shopping</div>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="section-title">All Cards (4)</div>
+            
+            <div class="cards-grid" id="cardsGrid">
+                <div class="card-item" data-type="lifestyle reward">
+                    <div class="card-visual card-elite">
+                        <div class="chip"></div>
+                        <div class="payment-network">VISA</div>
+                        <div class="contactless">📶</div>
+                    </div>
+                    <div class="card-name">LHDY Card ELITE</div>
+                    <div class="card-network">Powered by VISA</div>
+                    <div class="card-benefits">
+                        <div class="benefit-item">Premium rewards on dining & travel</div>
+                        <div class="benefit-item">Airport lounge access worldwide</div>
+                        <div class="benefit-item">Concierge services 24/7</div>
+                        <div class="benefit-item">No foreign transaction fees</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-apply" onclick="applyCard('ELITE', 'VISA')">Apply Now</button>
+                        <a href="#" class="btn-know-more" onclick="knowMore('ELITE')">Know More ▼</a>
+                    </div>
+                </div>
+
+                <div class="card-item" data-type="lifestyle reward">
+                    <div class="card-visual card-pulse">
+                        <div class="chip"></div>
+                        <div class="payment-network">RUPAY</div>
+                        <div class="contactless">📶</div>
+                    </div>
+                    <div class="card-name">LHDY Card PULSE</div>
+                    <div class="card-network">Powered by RuPay</div>
+                    <div class="card-benefits">
+                        <div class="benefit-item">Cashback on online shopping</div>
+                        <div class="benefit-item">Movie ticket discounts</div>
+                        <div class="benefit-item">Fuel surcharge waiver</div>
+                        <div class="benefit-item">UPI integration benefits</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-apply" onclick="applyCard('PULSE', 'RUPAY')">Apply Now</button>
+                        <a href="#" class="btn-know-more" onclick="knowMore('PULSE')">Know More ▼</a>
+                    </div>
+                </div>
+
+                <div class="card-item" data-type="lifestyle shop">
+                    <div class="card-visual card-infinity">
+                        <div class="chip"></div>
+                        <div class="payment-network">MASTER</div>
+                        <div class="contactless">📶</div>
+                    </div>
+                    <div class="card-name">LHDY Card INFINITY</div>
+                    <div class="card-network">Powered by Mastercard</div>
+                    <div class="card-benefits">
+                        <div class="benefit-item">Unlimited reward points</div>
+                        <div class="benefit-item">Brand partnership privileges</div>
+                        <div class="benefit-item">Travel insurance coverage</div>
+                        <div class="benefit-item">Mastercard priceless experiences</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-apply" onclick="applyCard('INFINITY', 'MASTERCARD')">Apply Now</button>
+                        <a href="#" class="btn-know-more" onclick="knowMore('INFINITY')">Know More ▼</a>
+                    </div>
+                </div>
+
+                <div class="card-item" data-type="reward shop">
+                    <div class="card-visual card-plus">
+                        <div class="chip"></div>
+                        <div class="payment-network">VISA</div>
+                        <div class="contactless">📶</div>
+                    </div>
+                    <div class="card-name">LHDY Card PLUS</div>
+                    <div class="card-network">Powered by VISA</div>
+                    <div class="card-benefits">
+                        <div class="benefit-item">Enhanced cashback rates</div>
+                        <div class="benefit-item">Shopping vouchers monthly</div>
+                        <div class="benefit-item">Lifestyle brand discounts</div>
+                        <div class="benefit-item">Zero liability protection</div>
+                    </div>
+                    <div class="card-actions">
+                        <button class="btn-apply" onclick="applyCard('PLUS', 'VISA')">Apply Now</button>
+                        <a href="#" class="btn-know-more" onclick="knowMore('PLUS')">Know More ▼</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="network-logos">
+            <div class="network-logo">
+                <div class="network-icon rupay">RuPay</div>
+                <div class="network-name">RuPay Network</div>
+            </div>
+            <div class="network-logo">
+                <div class="network-icon visa">VISA</div>
+                <div class="network-name">VISA Network</div>
+            </div>
+            <div class="network-logo">
+                <div class="network-icon mastercard">MC</div>
+                <div class="network-name">Mastercard Network</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Category filtering functionality
+        const categories = document.querySelectorAll('.category');
+        const cardItems = document.querySelectorAll('.card-item');
+        const sectionTitle = document.querySelector('.section-title');
+
+        categories.forEach(category => {
+            category.addEventListener('click', () => {
+                // Remove active class from all categories
+                categories.forEach(cat => cat.classList.remove('active'));
+                // Add active class to clicked category
+                category.classList.add('active');
+
+                const selectedCategory = category.dataset.category;
+                let visibleCount = 0;
+
+                cardItems.forEach(card => {
+                    if (selectedCategory === 'all') {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        const cardTypes = card.dataset.type.split(' ');
+                        if (cardTypes.includes(selectedCategory)) {
+                            card.style.display = 'block';
+                            visibleCount++;
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                });
+
+                // Update section title
+                const categoryName = selectedCategory.charAt(0).toUpperCase() + selectedCategory.slice(1);
+                sectionTitle.textContent = selectedCategory === 'all' 
+                    ? `All Cards (${visibleCount})` 
+                    : `${categoryName} Cards (${visibleCount})`;
+            });
+        });
+
+        // Card interaction functions
+        function applyCard(cardType, network) {
+            // Add button animation
+            event.target.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                event.target.style.transform = 'scale(1)';
+            }, 150);
+
+            // Show application confirmation
+            alert(`Applying for LHDY Card ${cardType} (${network} Network)...\n\nRedirecting to secure application form...`);
+            
+            // Here you would typically redirect to application form
+            // window.location.href = `/apply/${cardType.toLowerCase()}?network=${network.toLowerCase()}`;
+        }
+
+        function knowMore(cardType) {
+            event.preventDefault();
+            
+            // Show card details
+            const cardDetails = {
+                'ELITE': {
+                    network: 'VISA',
+                    benefits: ['Premium rewards: 5X on dining & travel', 'Complimentary airport lounge access', '24/7 concierge services', 'Zero foreign transaction fees'],
+                    fees: 'Annual fee: ₹4,999 (Waived on ₹4L+ spend)',
+                    features: 'Contactless payments, Global acceptance, Travel insurance up to ₹1 Crore'
+                },
+                'PULSE': {
+                    network: 'RuPay',
+                    benefits: ['Cashback: 2% on online shopping', 'Movie tickets: Buy 1 Get 1', 'Fuel surcharge waiver: 1% on all fuel', 'UPI rewards: 1% on all UPI transactions'],
+                    fees: 'Annual fee: ₹1,999 (Waived on ₹2L+ spend)',
+                    features: 'UPI integration, Domestic acceptance, Instant rewards'
+                },
+                'INFINITY': {
+                    network: 'Mastercard',
+                    benefits: ['Unlimited reward points: 1 point = ₹1', 'Brand partnerships: Up to 20% discount', 'Travel insurance: Complimentary coverage', 'Priceless experiences: Exclusive access'],
+                    fees: 'Annual fee: ₹2,999 (Waived on ₹3L+ spend)',
+                    features: 'Mastercard benefits, Global acceptance, Premium rewards'
+                },
+                'PLUS': {
+                    network: 'VISA',
+                    benefits: ['Enhanced cashback: 1.5% on all purchases', 'Monthly vouchers: ₹500 shopping vouchers', 'Lifestyle discounts: Up to 15% off', 'Zero liability: 100% fraud protection'],
+                    fees: 'Annual fee: ₹999 (Waived on ₹1L+ spend)',
+                    features: 'Basic rewards, Standard benefits, Secure transactions'
+                }
+            };
+
+            const details = cardDetails[cardType];
+            alert(`LHDY Card ${cardType} (${details.network}) Details:\n\n` +
+                  `💰 ${details.fees}\n\n` +
+                  `✨ Key Benefits:\n${details.benefits.join('\n')}\n\n` +
+                  `🔧 Features: ${details.features}`);
+        }
+
+        // Add interactive animations
+        cardItems.forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-10px) scale(1.02)';
+            });
+
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add loading animation on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            cardItems.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                
+                setTimeout(() => {
+                    card.style.transition = 'all 0.8s ease';
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 150);
+            });
+        });
+    </script>
+</body>
+</html>

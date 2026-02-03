@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyBank - Credit Card</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #f5f5f5;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .screen {
+            width: 100%;
+            min-height: 100vh;
+            background: #fff;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 20px 20px 20px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #E8E8E8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .greeting {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hi {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 2px;
+        }
+
+        .name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .notification-icon, .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .notification-icon {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .notification-icon:hover {
+            background: #357ABD;
+            transform: scale(1.05);
+        }
+
+        .profile-icon {
+            background: #E8E8E8;
+            color: #666;
+        }
+
+        .profile-icon:hover {
+            background: #D0D0D0;
+            transform: scale(1.05);
+        }
+
+        .content {
+            padding: 0 20px;
+            height: calc(100vh - 160px);
+            overflow-y: auto;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .credit-card {
+            background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .credit-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20px;
+            width: 100px;
+            height: 200%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+            transform: rotate(15deg);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .card-type {
+            font-size: 18px;
+            font-weight: 600;
+            font-style: italic;
+        }
+
+        .card-number {
+            font-size: 16px;
+            font-weight: 500;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .available-limit {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .limit-text {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+
+        .card-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .utilised {
+            text-align: left;
+        }
+
+        .total-limit {
+            text-align: right;
+        }
+
+        .amount {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .label {
+            font-size: 11px;
+            opacity: 0.9;
+        }
+
+        .visa-logo {
+            font-size: 24px;
+            font-weight: 700;
+            font-style: italic;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            opacity: 0.8;
+        }
+
+        .statement-summary {
+            background: #F8F9FA;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 20px;
+        }
+
+        .statement-header {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .amounts-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .amount-box {
+            flex: 1;
+        }
+
+        .amount-value {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+            margin-bottom: 4px;
+        }
+
+        .amount-label {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .paid-badge {
+            background: #28A745;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-weight: 600;
+        }
+
+        .payment-details {
+            margin-bottom: 20px;
+        }
+
+        .payment-header {
+            font-size: 16px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 12px;
+        }
+
+        .payment-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .payment-amount {
+            font-size: 16px;
+            font-weight: 700;
+            color: #000;
+        }
+
+        .payment-date {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-emi {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .btn-pay {
+            background: #17A2B8;
+            color: white;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .view-details {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .view-details-link {
+            color: #4A90E2;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .addon-card-promo {
+            background: linear-gradient(135deg, #28A745 0%, #20A040 100%);
+            border-radius: 12px;
+            padding: 20px;
+            color: white;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .promo-text {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 1.3;
+        }
+
+        .qr-code {
+            width: 40px;
+            height: 40px;
+            background: white;
+            border-radius: 6px;
+            margin: 15px auto 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            color: #000;
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #E8E8E8;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px 0 20px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-size: 10px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .nav-item.active {
+            color: #4A90E2;
+            background: rgba(74, 144, 226, 0.1);
+        }
+
+        .nav-item:hover {
+            color: #4A90E2;
+            background: rgba(74, 144, 226, 0.05);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .detail-view {
+            display: none;
+            padding: 20px;
+            height: calc(100% - 100px);
+            overflow-y: auto;
+        }
+
+        .detail-view.active {
+            display: block;
+        }
+
+        .back-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 10px 0;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 18px;
+            cursor: pointer;
+            margin-right: 15px;
+            color: #4A90E2;
+        }
+
+        .page-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .info-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #E8E8E8;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .info-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #000;
+        }
+
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #F0F0F0;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-info h4 {
+            font-size: 14px;
+            font-weight: 600;
+            color: #000;
+            margin-bottom: 4px;
+        }
+
+        .transaction-info p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .transaction-amount {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .amount-positive {
+            color: #28A745;
+        }
+
+        .amount-negative {
+            color: #DC3545;
+        }
+
+        .section-content {
+            padding: 20px;
+            text-align: center;
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .section-icon {
+            font-size: 48px;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .section-description {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.5;
+            max-width: 300px;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .feature-card {
+            background: #F8F9FA;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid #E8E8E8;
+        }
+
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 400px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+    </style>
+</head>
+<body>
+    <div class="screen">
+        <!-- Header -->
+        <div class="header">
+            <div class="user-info">
+                <div class="avatar">NG</div>
+                <div class="greeting">
+                    <div class="hi">Hi,</div>
+                    <div class="name">NAMITA GUPTA</div>
+                </div>
+            </div>
+            <div class="header-icons">
+                <button class="notification-icon" onclick="showNotifications()">🔔</button>
+                <button class="profile-icon" onclick="showProfile()">👤</button>
+            </div>
+        </div>
+
+        <!-- Home Section -->
+        <div id="homeSection" class="section active">
+            <div class="content">
+                <!-- Credit Card -->
+                <div class="credit-card">
+                    <div class="card-header">
+                        <div class="card-type">Elite</div>
+                        <div class="visa-logo">VISA</div>
+                    </div>
+                    <div class="card-number">•••• 5556</div>
+                    <div class="available-limit">₹1,48,054.43</div>
+                    <div class="limit-text">Available Credit Limit</div>
+                    <div class="card-bottom">
+                        <div class="utilised">
+                            <div class="amount">₹43,945.57</div>
+                            <div class="label">Limit Utilised</div>
+                        </div>
+                        <div class="total-limit">
+                            <div class="amount">₹1,92,000.00</div>
+                            <div class="label">Total Credit Limit</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Statement Summary -->
+                <div class="statement-summary">
+                    <div class="statement-header">Summary of last statement, dated 08 Feb 2024</div>
+                    <div class="amounts-row">
+                        <div class="amount-box">
+                            <div class="amount-value">
+                                ₹24,276.00
+                                <span class="paid-badge">Paid</span>
+                            </div>
+                            <div class="amount-label">Total Amt. Due</div>
+                        </div>
+                        <div class="amount-box">
+                            <div class="amount-value">₹1,214.00</div>
+                            <div class="amount-label">Min. Amt. Due</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Details -->
+                <div class="payment-details">
+                    <div class="payment-header">Last payment details</div>
+                    <div class="payment-info">
+                        <div>
+                            <div class="payment-amount">₹24,276.00</div>
+                            <div style="font-size: 12px; color: #666;">Amount Paid</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div class="payment-date">18 Feb 2024</div>
+                            <div style="font-size: 12px; color: #666;">Payment Date</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn btn-emi" onclick="showPaymentModal('EMI')">Pay in EMI</button>
+                    <button class="btn btn-pay" onclick="showPaymentModal('Pay')">Pay Now</button>
+                </div>
+
+                <!-- View Account Details -->
+                <div class="view-details">
+                    <a href="javascript:void(0)" class="view-details-link" onclick="showAccountDetails()">
+                        View Account Details →
+                    </a>
+                </div>
+
+                <!-- Add-on Card Promo -->
+                <div class="addon-card-promo">
+                    <div class="promo-text">
+                        Apply for a<br>
+                        complimentary Add-on<br>
+                        Card in a few taps
+                    </div>
+                    <div class="qr-code">QR</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- EMI & More Section -->
+        <div id="emiSection" class="section">
+            <div class="section-content">
+                <div class="section-icon">💳</div>
+                <div class="section-title">EMI & More</div>
+                <div class="section-description">Convert your purchases into easy EMIs and explore more credit options</div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Convert to EMI</h3>
+                        <p>Turn purchases into easy monthly payments</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Pre-approved EMI</h3>
+                        <p>Get instant EMI approvals for shopping</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Balance Transfer</h3>
+                        <p>Transfer balances from other cards</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Cash Advance</h3>
+                        <p>Get cash when you need it most</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pay Section -->
+        <div id="paySection" class="section">
+            <div class="section-content">
+                <div class="section-icon">💰</div>
+                <div class="section-title">Pay Bills</div>
+                <div class="section-description">Pay your credit card bills and other utilities with ease</div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Credit Card Bill</h3>
+                        <p>Pay your current outstanding amount</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Auto Pay</h3>
+                        <p>Set up automatic monthly payments</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Utility Bills</h3>
+                        <p>Pay electricity, water, and gas bills</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Mobile Recharge</h3>
+                        <p>Recharge your mobile and DTH</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Services Section -->
+        <div id="servicesSection" class="section">
+            <div class="section-content">
+                <div class="section-icon">⚙️</div>
+                <div class="section-title">Services</div>
+                <div class="section-description">Manage your account settings and card services</div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Block/Unblock Card</h3>
+                        <p>Secure your card instantly</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>PIN Services</h3>
+                        <p>Change or reset your PIN</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Limit Management</h3>
+                        <p>Increase or decrease your credit limit</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Statement Download</h3>
+                        <p>Download your monthly statements</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- More Section -->
+        <div id="moreSection" class="section">
+            <div class="section-content">
+                <div class="section-icon">📱</div>
+                <div class="section-title">More Options</div>
+                <div class="section-description">Discover additional features and support options</div>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h3>Customer Support</h3>
+                        <p>24/7 help and assistance</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Rewards Program</h3>
+                        <p>Track and redeem your rewards</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Offers & Deals</h3>
+                        <p>Exclusive discounts and cashback</p>
+                    </div>
+                    <div class="feature-card">
+                        <h3>Settings</h3>
+                        <p>Manage your app preferences</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Account Details View -->
+        <div id="accountDetails" class="detail-view">
+            <div class="back-header">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <div class="page-title">Account Details</div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-row">
+                    <span class="info-label">Card Number</span>
+                    <span class="info-value" id="cardNumberDisplay">•••• •••• •••• 5556</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Card Type</span>
+                    <span class="info-value">Elite Credit Card</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Expiry Date</span>
+                    <span class="info-value">12/27</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Available Limit</span>
+                    <span class="info-value">₹1,48,054.43</span>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3 style="margin-bottom: 15px; font-size: 16px;">Recent Transactions</h3>
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <h4>Amazon India</h4>
+                        <p>June 26, 2024</p>
+                    </div>
+                    <div class="transaction-amount amount-negative">-₹2,599</div>
+                </div>
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <h4>Swiggy</h4>
+                        <p>June 25, 2024</p>
+                    </div>
+                    <div class="transaction-amount amount-negative">-₹450</div>
+                </div>
+                <div class="transaction-item">
+                    <div class="transaction-info">
+                        <h4>Salary Credit</h4>
+                        <p>June 24, 2024</p>
+                    </div>
+                    <div class="transaction-amount amount-positive">+₹75,000</div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <h3 style="margin-bottom: 15px; font-size: 16px;">Account Features</h3>
+                <div class="info-row">
+                    <span class="info-label">Auto Debit</span>
+                    <span class="info-value" style="color: #28A745;">Active</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Add-on Cards</span>
+                    <span class="info-value">1 Active</span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Statement Frequency</span>
+                    <span class="info-value">Monthly</span>
+                </div>
+            </div>
+
+            <button class="btn btn-pay" style="width: 100%; margin-top: 20px;">
+                Request Duplicate Statement
+            </button>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <button class="nav-item active" onclick="showSection('home')">
+                <div class="nav-icon">🏠</div>
+                <span>Home</span>
+            </button>
+            <button class="nav-item" onclick="showSection('emi')">
+                <div class="nav-icon">📊</div>
+                <span>EMI & More</span>
+            </button>
+            <button class="nav-item" onclick="showSection('pay')">
+                <div class="nav-icon">💳</div>
+                <span>Pay</span>
+            </button>
+            <button class="nav-item" onclick="showSection('services')">
+                <div class="nav-icon">⚙️</div>
+                <span>Services</span>
+            </button>
+            <button class="nav-item" onclick="showSection('more')">
+                <div class="nav-icon">⋯</div>
+                <span>More</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal for notifications/profile -->
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let cardNumberVisible = false;
+        let currentSection = 'home';
+
+        function showSection(section) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            
+            // Show selected section
+            document.getElementById(section + 'Section').classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            event.target.closest('.nav-item').classList.add('active');
+            
+            currentSection = section;
+        }
+
+        function showAccountDetails() {
+            document.getElementById('homeSection').style.display = 'none';
+            document.getElementById('accountDetails').classList.add('active');
+        }
+
+        function goBack() {
+            document.getElementById('accountDetails').classList.remove('active');
+            document.getElementById('homeSection').style.display = 'block';
+        }
+
+        function toggleCardNumber() {
+            const cardNumberDisplay = document.getElementById('cardNumberDisplay');
+            
+            if (cardNumberVisible) {
+                cardNumberDisplay.textContent = '•••• •••• •••• 5556';
+                cardNumberVisible = false;
+            } else {
+                cardNumberDisplay.textContent = '1234 5678 9012 5556';
+                cardNumberVisible = true;
+            }
+        }
+
+        function showNotifications() {
+            document.getElementById('modalContent').innerHTML = `
+                <h2>🔔 Notifications</h2>
+                <div style="margin-top: 20px; text-align: left;">
+                    <div style="padding: 12px; border-bottom: 1px solid #eee;">
+                        <strong>Payment Reminder</strong><br>
+                        <small style="color: #666;">Your next payment is due on July 8, 2025</small>
+                    </div>
+                    <div style="padding: 12px; border-bottom: 1px solid #eee;">
+                        <strong>Transaction Alert</strong><br>
+                        <small style="color: #666;">₹450 spent at Swiggy on June 25</small>
+                    </div>
+                    <div style="padding: 12px;">
+                        <strong>Reward Points</strong><br>
+                        <small style="color: #666;">You've earned 250 reward points this month!</small>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function showProfile() {
+            document.getElementById('modalContent').innerHTML = `
+                <h2>👤 Profile</h2>
+                <div style="margin-top: 20px; text-align: left;">
+                    <div style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                        <strong>Name:</strong> Namita Gupta
+                    </div>
+                    <div style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                        <strong>Card Number:</strong> •••• •••• •••• 5556
+                    </div>
+                    <div style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                        <strong>Member Since:</strong> January 2022
+                    </div>
+                    <div style="padding: 8px 0; border-bottom: 1px solid #eee;">
+                        <strong>Account Status:</strong> <span style="color: #28A745;">Active</span>
+                    </div>
+                    <div style="padding: 8px 0;">
+                        <strong>Customer ID:</strong> CUS123456789
+                    </div>
+                </div>
+                <button class="btn btn-pay" style="width: 100%; margin-top: 20px;" onclick="closeModal()">
+                    Edit Profile
+                </button>
+            `;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function showPaymentModal(type) {
+            const title = type === 'EMI' ? 'Convert to EMI' : 'Pay Now';
+            const description = type === 'EMI' ? 'Convert your outstanding amount into easy monthly installments' : 'Pay your credit card bill instantly';
+            
+            document.getElementById('modalContent').innerHTML = `
+                <h2>💳 ${title}</h2>
+                <p style="color: #666; margin: 15px 0;">${description}</p>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin: 20px 0;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Outstanding Amount:</span>
+                        <strong>₹43,945.57</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between;">
+                        <span>Minimum Amount Due:</span>
+                        <strong>₹1,214.00</strong>
+                    </div>
+                </div>
+                ${type === 'EMI' ? `
+                    <div style="margin: 20px 0;">
+                        <label style="display: block; margin-bottom: 5px;">Select EMI Tenure:</label>
+                        <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                            <option>3 months - ₹15,315/month</option>
+                            <option>6 months - ₹7,658/month</option>
+                            <option>12 months - ₹3,829/month</option>
+                        </select>
+                    </div>
+                ` : `
+                    <div style="margin: 20px 0;">
+                        <label style="display: block; margin-bottom: 5px;">Enter Amount:</label>
+                        <input type="number" placeholder="₹43,945.57" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                    </div>
+                `}
+                <div style="display: flex; gap: 10px; margin-top: 20px;">
+                    <button class="btn" style="background: #6c757d; color: white; flex: 1;" onclick="closeModal()">
+                        Cancel
+                    </button>
+                    <button class="btn btn-pay" style="flex: 1;" onclick="processPayment('${type}')">
+                        ${type === 'EMI' ? 'Convert to EMI' : 'Pay Now'}
+                    </button>
+                </div>
+            `;
+            document.getElementById('modal').style.display = 'block';
+        }
+
+        function processPayment(type) {
+            document.getElementById('modalContent').innerHTML = `
+                <div style="text-align: center; padding: 20px;">
+                    <div style="font-size: 48px; color: #28A745; margin-bottom: 20px;">✅</div>
+                    <h2>Payment ${type === 'EMI' ? 'Conversion' : ''} Successful!</h2>
+                    <p style="color: #666; margin: 15px 0;">
+                        Your ${type === 'EMI' ? 'EMI conversion has been processed' : 'payment has been completed'} successfully.
+                    </p>
+                    <button class="btn btn-pay" style="width: 100%; margin-top: 20px;" onclick="closeModal()">
+                        Done
+                    </button>
+                </div>
+            `;
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        // Add click event to card number to toggle visibility
+        document.addEventListener('DOMContentLoaded', function() {
+            const cardNumberDisplay = document.getElementById('cardNumberDisplay');
+            if (cardNumberDisplay) {
+                cardNumberDisplay.addEventListener('click', toggleCardNumber);
+            }
+        });
+
+        // Add button animations
+        document.querySelectorAll('.btn').forEach(button => {
+            button.addEventListener('click', function() {
+                this.style.transform = 'scale(0.98)';
+                setTimeout(() => {
+                    this.style.transform = 'scale(1)';
+                }, 100);
+            });
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('modal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        // Add swipe gestures for mobile
+        let startY = 0;
+        let currentY = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            startY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            currentY = e.changedTouches[0].clientY;
+            const diffY = startY - currentY;
+            
+            if (diffY < -100 && document.getElementById('accountDetails').classList.contains('active')) {
+                goBack();
+            }
+        });
+
+        // Add keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+                if (document.getElementById('accountDetails').classList.contains('active')) {
+                    goBack();
+                }
+            }
+        });
+    </script>
+</body>
+</html>

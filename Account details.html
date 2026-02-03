@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Details - Mobile Banking</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .header .subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .balance-card {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 15px 0;
+            padding: 15px;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .balance-amount {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .menu-grid {
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .menu-item {
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: none;
+            border-radius: 15px;
+            padding: 20px 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+        }
+
+        .menu-item:active {
+            transform: translateY(0);
+        }
+
+        .menu-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .menu-text {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #333;
+            line-height: 1.2;
+        }
+
+        .content-section {
+            display: none;
+            padding: 20px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .back-btn {
+            background: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #1976D2;
+            transform: translateY(-1px);
+        }
+
+        .card-display {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 15px 0;
+            position: relative;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-number {
+            font-size: 1.2rem;
+            letter-spacing: 2px;
+            margin: 15px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .statement-item, .transaction-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border-left: 4px solid #2196F3;
+        }
+
+        .transaction-amount {
+            font-weight: bold;
+            color: #2196F3;
+        }
+
+        .transaction-amount.debit {
+            color: #f44336;
+        }
+
+        .transaction-date {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .action-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin: 10px 5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            box-shadow: 0 4px 15px rgba(255, 152, 0, 0.3);
+        }
+
+        .action-btn.danger {
+            background: linear-gradient(135deg, #f44336, #d32f2f);
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+
+        .addon-card {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+            border: 2px solid #e0e0e0;
+        }
+
+        .addon-card.active {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+
+        .spend-category {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .spend-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .spend-fill {
+            background: linear-gradient(90deg, #2196F3, #21CBF3);
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .notification {
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            text-align: center;
+            display: none;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #2196F3;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+                min-height: 100vh;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .menu-item {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Account Details</h1>
+            <p class="subtitle">Manage your banking needs</p>
+            <div class="balance-card">
+                <div class="balance-amount">₹1,25,450.00</div>
+                <div>Available Balance</div>
+            </div>
+        </div>
+
+        <!-- Main Menu -->
+        <div id="mainMenu" class="menu-grid">
+            <button class="menu-item" onclick="showSection('cardNumber')">
+                <span class="menu-icon">💳</span>
+                <span class="menu-text">Display Card Number</span>
+            </button>
+            
+            <button class="menu-item" onclick="showSection('cardStatement')">
+                <span class="menu-icon">📄</span>
+                <span class="menu-text">Card Statement</span>
+            </button>
+            
+            <button class="menu-item" onclick="showSection('unbilledTransaction')">
+                <span class="menu-icon">⏳</span>
+                <span class="menu-text">Unbilled Transaction</span>
+            </button>
+            
+            <button class="menu-item" onclick="showSection('transactionHistory')">
+                <span class="menu-icon">📊</span>
+                <span class="menu-text">Transaction History</span>
+            </button>
+            
+            <button class="menu-item" onclick="showSection('paymentHistory')">
+                <span class="menu-icon">💰</span>
+                <span class="menu-text">Payment History</span>
+            </button>
+            
+            <button class="menu-item" onclick="showSection('autoDebit')">
+                <span class="menu-icon">🔄</span>
+                <span class="menu-text">Auto Debit</span>
+            </button>
+            
+            <button class="menu-item" onclick="showSection('addonCard')">
+                <span class="menu-icon">➕</span>
+                <span class="menu-text">Add-on Card Details</span>
+            </button>
+            
+            <button class="menu-item" onclick="showSection('keyRenewal')">
+                <span class="menu-icon">🔑</span>
+                <span class="menu-text">Key Renewal</span>
+            </button>
+            
+            <button class="menu-item" onclick="showSection('duplicateStatement')">
+                <span class="menu-icon">📋</span>
+                <span class="menu-text">Duplicate Statement</span>
+            </button>
+            
+            <button class="menu-item" onclick="showSection('spendAnalyzer')">
+                <span class="menu-icon">📈</span>
+                <span class="menu-text">Spend Analyzer</span>
+            </button>
+        </div>
+
+        <!-- Content Sections -->
+        
+        <!-- 1. Display Card Number -->
+        <div id="cardNumber" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="section-title">Card Details</div>
+            <div class="card-display">
+                <div>LHDY Bank</div>
+                <div class="card-number">**** **** **** 1234</div>
+                <div class="card-info">
+                    <div>
+                        <div>Valid Thru</div>
+                        <div>12/28</div>
+                    </div>
+                    <div>
+                        <div>Card Type</div>
+                        <div>Platinum</div>
+                    </div>
+                </div>
+            </div>
+            <button class="action-btn" onclick="showFullCardNumber()">Show Full Number</button>
+            <button class="action-btn secondary" onclick="blockCard()">Block Card</button>
+            <button class="action-btn" onclick="downloadCardDetails()">Download Details</button>
+            <div id="cardNotification" class="notification"></div>
+        </div>
+
+        <!-- 2. Card Statement -->
+        <div id="cardStatement" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="section-title">Card Statement</div>
+            <div class="form-group">
+                <label>Select Month</label>
+                <select id="statementMonth">
+                    <option>June 2025</option>
+                    <option>May 2025</option>
+                    <option>April 2025</option>
+                </select>
+            </div>
+            <div class="statement-item">
+                <div><strong>Statement Period:</strong> June 1-30, 2025</div>
+                <div><strong>Total Spent:</strong> ₹45,230</div>
+                <div><strong>Payment Due:</strong> ₹12,450</div>
+                <div><strong>Due Date:</strong> July 15, 2025</div>
+            </div>
+            <button class="action-btn" onclick="viewDetailedStatement()">View Detailed Statement</button>
+            <button class="action-btn secondary" onclick="downloadStatement()">Download PDF</button>
+            <button class="action-btn" onclick="emailStatement()">Email Statement</button>
+            <div id="statementNotification" class="notification"></div>
+        </div>
+
+        <!-- 3. Unbilled Transaction -->
+        <div id="unbilledTransaction" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="section-title">Unbilled Transactions</div>
+            <div class="transaction-item">
+                <div><strong>Amazon Purchase</strong></div>
+                <div class="transaction-amount debit">-₹2,350</div>
+                <div class="transaction-date">June 25, 2025</div>
+            </div>
+            <div class="transaction-item">
+                <div><strong>Swiggy Order</strong></div>
+                <div class="transaction-amount debit">-₹450</div>
+                <div class="transaction-date">June 24, 2025</div>
+            </div>
+            <div class="transaction-item">
+                <div><strong>Fuel - HP Petrol</strong></div>
+                <div class="transaction-amount debit">-₹3,200</div>
+                <div class="transaction-date">June 23, 2025</div>
+            </div>
+            <button class="action-btn" onclick="refreshUnbilled()">Refresh</button>
+            <button class="action-btn secondary" onclick="convertToEMI()">Convert to EMI</button>
+            <button class="action-btn" onclick="exportUnbilled()">Export List</button>
+            <div id="unbilledNotification" class="notification"></div>
+        </div>
+
+        <!-- 4. Transaction History -->
+        <div id="transactionHistory" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="section-title">Transaction History</div>
+            <div class="form-group">
+                <label>Date Range</label>
+                <select id="historyRange">
+                    <option>Last 30 Days</option>
+                    <option>Last 3 Months</option>
+                    <option>Last 6 Months</option>
+                    <option>Custom Range</option>
+                </select>
+            </div>
+            <div class="transaction-item">
+                <div><strong>Salary Credit</strong></div>
+                <div class="transaction-amount">+₹75,000</div>
+                <div class="transaction-date">June 1, 2025</div>
+            </div>
+            <div class="transaction-item">
+                <div><strong>EMI - Home Loan</strong></div>
+                <div class="transaction-amount debit">-₹25,000</div>
+                <div class="transaction-date">June 5, 2025</div>
+            </div>
+            <div class="transaction-item">
+                <div><strong>Online Shopping</strong></div>
+                <div class="transaction-amount debit">-₹8,500</div>
+                <div class="transaction-date">June 10, 2025</div>
+            </div>
+            <button class="action-btn" onclick="filterTransactions()">Apply Filters</button>
+            <button class="action-btn secondary" onclick="searchTransaction()">Search</button>
+            <button class="action-btn" onclick="exportHistory()">Export History</button>
+            <div id="historyNotification" class="notification"></div>
+        </div>
+
+        <!-- 5. Payment History -->
+        <div id="paymentHistory" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="section-title">Payment History</div>
+            <div class="transaction-item">
+                <div><strong>Credit Card Payment</strong></div>
+                <div class="transaction-amount">₹15,000</div>
+                <div class="transaction-date">June 15, 2025 - Success</div>
+            </div>
+            <div class="transaction-item">
+                <div><strong>Minimum Payment</strong></div>
+                <div class="transaction-amount">₹3,500</div>
+                <div class="transaction-date">May 20, 2025 - Success</div>
+            </div>
+            <div class="transaction-item">
+                <div><strong>Full Payment</strong></div>
+                <div class="transaction-amount">₹22,800</div>
+                <div class="transaction-date">April 18, 2025 - Success</div>
+            </div>
+            <button class="action-btn" onclick="makePayment()">Make Payment</button>
+            <button class="action-btn secondary" onclick="schedulePayment()">Schedule Payment</button>
+            <button class="action-btn" onclick="viewPaymentReceipt()">View Receipts</button>
+            <div id="paymentNotification" class="notification"></div>
+        </div>
+
+        <!-- 6. Auto Debit -->
+        <div id="autoDebit" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="section-title">Auto Debit Settings</div>
+            <div class="addon-card active">
+                <div><strong>Electricity Bill</strong></div>
+                <div>Amount: ₹2,500/month</div>
+                <div>Next Debit: July 5, 2025</div>
+                <div>Status: Active</div>
+            </div>
+            <div class="addon-card">
+                <div><strong>Mobile Recharge</strong></div>
+                <div>Amount: ₹599/month</div>
+                <div>Next Debit: July 10, 2025</div>
+                <div>Status: Inactive</div>
+            </div>
+            <button class="action-btn" onclick="addAutoDebit()">Add New Auto Debit</button>
+            <button class="action-btn secondary" onclick="modifyAutoDebit()">Modify Existing</button>
+            <button class="action-btn danger" onclick="cancelAutoDebit()">Cancel Auto Debit</button>
+            <div id="autoDebitNotification" class="notification"></div>
+        </div>
+
+        <!-- 7. Add-on Card Details -->
+        <div id="addonCard" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="section-title">Add-on Card Details</div>
+            <div class="addon-card active">
+                <div><strong>Primary Card</strong></div>
+                <div>Card Number: **** **** **** 1234</div>
+                <div>Cardholder: John Doe</div>
+                <div>Status: Active</div>
+            </div>
+            <div class="addon-card">
+                <div><strong>Add-on Card 1</strong></div>
+                <div>Card Number: **** **** **** 5678</div>
+                <div>Cardholder: Jane Doe</div>
+                <div>Status: Active</div>
+            </div>
+            <button class="action-btn" onclick="requestAddonCard()">Request New Add-on</button>
+            <button class="action-btn secondary" onclick="manageAddonCard()">Manage Add-on Cards</button>
+            <button class="action-btn danger" onclick="blockAddonCard()">Block Add-on Card</button>
+            <div id="addonNotification" class="notification"></div>
+        </div>
+
+        <!-- 8. Key Renewal -->
+        <div id="keyRenewal" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="section-title">Key Renewal</div>
+            <div class="form-group">
+                <label>Select Key Type</label>
+                <select id="keyType">
+                    <option>Internet Banking</option>
+                    <option>Mobile Banking</option>
+                    <option>Debit Card PIN</option>
+                    <option>Credit Card PIN</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Current PIN/Password</label>
+                <input type="password" placeholder="Enter current PIN/Password">
+            </div>
+            <div class="form-group">
+                <label>New PIN/Password</label>
+                <input type="password" placeholder="Enter new PIN/Password">
+            </div>
+            <div class="form-group">
+                <label>Confirm New PIN/Password</label>
+                <input type="password" placeholder="Confirm new PIN/Password">
+            </div>
+            <button class="action-btn" onclick="renewKey()">Renew Key</button>
+            <button class="action-btn secondary" onclick="resetKey()">Reset Key</button>
+            <button class="action-btn" onclick="generateTempKey()">Generate Temp Key</button>
+            <div id="keyRenewalNotification" class="notification"></div>
+        </div>
+
+        <!-- 9. Request Duplicate Statement -->
+        <div id="duplicateStatement" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="section-title">Request Duplicate Statement</div>
+            <div class="form-group">
+                <label>Statement Type</label>
+                <select id="duplicateType">
+                    <option>Credit Card Statement</option>
+                    <option>Savings Account Statement</option>
+                    <option>Current Account Statement</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Statement Period</label>
+                <select id="duplicatePeriod">
+                    <option>Last 3 Months</option>
+                    <option>Last 6 Months</option>
+                    <option>Last 1 Year</option>
+                    <option>Custom Period</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Delivery Method</label>
+                <select id="deliveryMethod">
+                    <option>Email</option>
+                    <option>SMS</option>
+                    <option>Physical Copy</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Email Address</label>
+                <input type="email" placeholder="Enter email address" value="john.doe@email.com">
+            </div>
+            <button class="action-btn" onclick="requestDuplicate()">Request Statement</button>
+            <button class="action-btn secondary" onclick="trackRequest()">Track Request</button>
+            <button class="action-btn" onclick="viewPreviousRequests()">Previous Requests</button>
+            <div id="duplicateNotification" class="notification"></div>
+        </div>
+
+        <!-- 10. Spend Analyzer -->
+        <div id="spendAnalyzer" class="content-section">
+            <button class="back-btn" onclick="showMenu()">← Back</button>
+            <div class="section-title">Spend Analyzer</div>
+            <div class="form-group">
+                <label>Analysis Period</label>
+                <select id="analyzePeriod">
+                    <option>This Month</option>
+                    <option>Last 3 Months</option>
+                    <option>Last 6 Months</option>
+                    <option>This Year</option>
+                </select>
+            </div>
+            
+            <div class="spend-category">
+                <span>Food & Dining</span>
+                <span>₹12,500 (35%)</span>
+            </div>
+            <div class="spend-bar">
+                <div class="spend-fill" style="width: 35%"></div>
+            </div>
+
+            <div class="spend-category">
+                <span>Shopping</span>
+                <span>₹8,200 (23%)</span>
+            </div>
+            <div class="spend-bar">
+                <div class="spend-fill" style="width: 23%"></div>
+            </div>
+
+            <div class="spend-category">
+                <span>Transportation</span>
+                <span>₹6,800 (19%)</span>
+            </div>
+            <div class="spend-bar">
+                <div class="spend-fill" style="width: 19%"></div>
+            </div>
+
+            <div class="spend-category">
+                <span>Utilities</span>
+                <span>₹4,200 (12%)</span>
+            </div>
+            <div class="spend-bar">
+                <div class="spend-fill" style="width: 12%"></div>
+            </div>
+
+            <div class="spend-category">
+                <span>Others</span>
+                <span>₹3,900 (11%)</span>
+            </div>
+            <div class="spend-bar">
+                <div class="spend-fill" style="width: 11%"></div>
+            </div>
+
+            <button class="action-btn" onclick="generateReport()">Generate Report</button>
+            <button class="action-btn secondary" onclick="setBudgetLimit()">Set Budget Limits</button>
+            <button class="action-btn" onclick="compareSpending()">Compare Spending</button>
+            <div id="analyzerNotification" class="notification"></div>
+        </div>
+    </div>
+
+    <script>
+        // Show specific section and hide menu
+        function showSection(sectionId) {
+            document.getElementById('mainMenu').style.display = 'none';
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            document.getElementById(sectionId).classList.add('active');
+        }
+
+        // Show main menu and hide all sections
+        function showMenu() {
+            document.getElementById('mainMenu').style.display = 'grid';
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+        }
+
+        // Show notification
+        function showNotification(elementId, message, type = 'success') {
+            const notification = document.getElementById(elementId);
+            notification.textContent = message;
+            notification.className = `notification show ${type}`;
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+
+        // Card Number Functions
+        function showFullCardNumber() {
+            showNotification('cardNotification', 'Full card number displayed for security verification');
+        }
+
+        function blockCard() {
+            showNotification('cardNotification', 'Card blocking request submitted successfully', 'danger');
+        }
+
+        function downloadCardDetails() {
+            showNotification('cardNotification', 'Card details downloaded successfully');
+        }
+
+        // Card Statement Functions
+        function viewDetailedStatement() {
+            showNotification('statementNotification', 'Loading detailed statement...');
+        }
+
+        function downloadStatement() {
+            showNotification('statementNotification', 'Statement PDF downloaded successfully');
+        }
+
+        function emailStatement() {
+            showNotification('statementNotification', 'Statement emailed to registered email address');
+        }
+
+        // Unbilled Transaction Functions
+        function refreshUnbilled() {
+            showNotification('unbilledNotification', 'Unbilled transactions refreshed');
+        }
+
+        function convertToEMI() {
+            showNotification('unbilledNotification', 'EMI conversion options displayed');
+        }
+
+        function exportUnbilled() {
+            showNotification('unbilledNotification', 'Unbilled transactions exported successfully');
+        }
+
+        // Transaction History Functions
+        function filterTransactions() {
+            showNotification('historyNotification', 'Filters applied to transaction history');
+        }
+
+        function searchTransaction() {
+            showNotification('historyNotification', 'Search functionality activated');
+        }
+
+        function exportHistory() {
+            showNotification('historyNotification', 'Transaction history exported successfully');
+        }
+
+        // Payment History Functions
+        function makePayment() {
+            showNotification('paymentNotification', 'Redirecting to payment gateway...');
+        }
+
+        function schedulePayment() {
+            showNotification('paymentNotification', 'Payment scheduling options displayed');
+        }
+
+        function viewPaymentReceipt() {
+            showNotification('paymentNotification', 'Payment receipts loaded successfully');
+        }
+
+        // Auto Debit Functions
+        function addAutoDebit() {
+            showNotification('autoDebitNotification', 'Auto debit setup form displayed');
+        }
+
+        function modifyAutoDebit() {
+            showNotification('autoDebitNotification', 'Auto debit modification options displayed');
+        }
+
+        function cancelAutoDebit() {
+            showNotification('autoDebitNotification', 'Auto debit cancellation initiated', 'danger');
+        }
+
+        // Add-on Card Functions
+        function requestAddonCard() {
+            showNotification('addonNotification', 'Add-on card request form displayed');
+        }
+
+        function manageAddonCard() {
+            showNotification('addonNotification', 'Add-on card management options displayed');
+        }
+
+        function blockAddonCard() {
+            showNotification('addonNotification', 'Add-on card blocking options displayed', 'danger');
+        }
+
+        // Key Renewal Functions
+        function renewKey() {
+            showNotification('keyRenewalNotification', 'Key renewal process initiated');
+        }
+
+        function resetKey() {
+            showNotification('keyRenewalNotification', 'Key reset process initiated');
+        }
+
+        function generateTempKey() {
+            showNotification('keyRenewalNotification', 'Temporary key generated successfully');
+        }
+
+        // Duplicate Statement Functions
+        function requestDuplicate() {
+            showNotification('duplicateNotification', 'Duplicate statement request submitted');
+        }
+
+        function trackRequest() {
+            showNotification('duplicateNotification', 'Request tracking information displayed');
+        }
+
+        function viewPreviousRequests() {
+            showNotification('duplicateNotification', 'Previous requests history loaded');
+        }
+
+        // Spend Analyzer Functions
+        function generateReport() {
+            showNotification('analyzerNotification', 'Spending report generated successfully');
+        }
+
+        function setBudgetLimit() {
+            showNotification('analyzerNotification', 'Budget limit setting options displayed');
+        }
+
+        function compareSpending() {
+            showNotification('analyzerNotification', 'Spending comparison analysis displayed');
+        }
+
+        // Initialize the app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Mobile Banking App initialized');
+        });
+    </script>
+</body>
+</html>
