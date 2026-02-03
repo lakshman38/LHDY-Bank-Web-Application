@@ -42,7 +42,7 @@ The main objective of this project is to demonstrate front-end web development s
 
 Clone the repository
 
-git clone https://github.com/your-username/LHDY-Bank-Web-Application.git
+git clone https://github.com/lakshman38/LHDY-Bank-Web-Application.git
 
 
 Open the project folder
